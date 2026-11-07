@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f7fc;
+            color: #243247;
+        }
+
+        header {
+            background: #145da0;
+            color: white;
+            padding: 25px 30px;
+        }
+
+        header h1 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        nav {
+            background: white;
+            padding: 18px 30px;
+            display: flex;
+            gap: 30px;
+            box-shadow: 0 2px 5px #dce5ef;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #145da0;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        h2 {
+            color: #145da0;
+            margin-bottom: 15px;
+        }
+
+        .welcome {
+            margin-bottom: 35px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .card, .section {
+            background: white;
+            padding: 25px;
+            border-radius: 13px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .card h3 {
+            color: #145da0;
+            margin-bottom: 12px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .camera-box {
+            background: #e7edf4;
+            min-height: 300px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        #cameraFeed {
+            width: 100%;
+            max-width: 750px;
+            display: none;
+            border-radius: 10px;
+        }
+
+        #cameraMessage {
+            color: #64748b;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        #startBtn {
+            background: #145da0;
+            color: white;
+        }
+
+        #stopBtn {
+            background: #dc3545;
+            color: white;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .prediction {
+            background: #e8f3ff;
+            border-left: 5px solid #145da0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .prediction h3 {
+            color: #145da0;
+            margin-bottom: 10px;
+        }
+
+        #predictedLetter {
+            font-size: 40px;
+            font-weight: bold;
+            color: #145da0;
+        }
+
+        #cameraStatus {
+            margin-top: 12px;
+            color: #64748b;
+        }
+
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(75px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .letter {
+            background: #e8f3ff;
+            color: #145da0;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        footer {
+            background: #145da0;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        @media(max-width: 600px) {
+            nav {
+                gap: 15px;
+            }
+
+            header h1 {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Sign Language Recognition</h1>
+    <p>AI-Powered Alphabet Recognition System</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#live">Live Recognition</a>
+    <a href="#guide">Alphabet Guide</a>
+    <a href="#about">About Project</a>
+</nav>
+
+<main>
+
+    <!-- HOME -->
+    <section id="home" class="welcome">
+        <h2>Welcome to Sign Language Recognition</h2>
+        <p>Recognize hand gestures and identify English alphabets using Deep Learning.</p>
+    </section>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Live Recognition</h3>
+            <p>Recognize hand gestures using your webcam.</p>
+        </div>
+
+        <div class="card">
+            <h3>Alphabet Guide</h3>
+            <p>Learn the available sign language alphabets.</p>
+        </div>
+
+        <div class="card">
+            <h3>Prediction History</h3>
+            <p id="historySummary">Your recognized alphabets will appear here.</p>
+        </div>
+    </div>
+
+    <!-- LIVE RECOGNITION -->
+    <section id="live" class="section">
+
+        <h2>Live Sign Recognition</h2>
+        <p>Place your hand in front of the webcam and show an alphabet sign.</p>
+
+        <div class="camera-box">
+
+            <p id="cameraMessage">
+                Webcam preview will appear here
+            </p>
+
+            <img id="cameraFeed" alt="Live webcam feed">
+
+        </div>
+
+        <div class="buttons">
+
+            <button id="startBtn" onclick="startCamera()">
+                Start Webcam
+            </button>
+
+            <button id="stopBtn" onclick="stopCamera()" disabled>
+                Stop Webcam
+            </button>
+
+        </div>
+
+        <p id="cameraStatus">Camera is currently stopped.</p>
+
+        <div class="prediction">
+
+            <h3>Predicted Alphabet</h3>
+
+            <div id="predictedLetter">--</div>
+
+            <p id="confidence">Confidence: --</p>
+
+        </div>
+
+        <div class="section" style="margin-top:20px;">
+            <h3 style="color:#145da0;">Prediction History</h3>
+            <p id="historyList">No predictions yet.</p>
+        </div>
+
+    </section>
+
+    <!-- ALPHABET GUIDE -->
+    <section id="guide" class="section">
+
+        <h2>Alphabet Guide</h2>
+
+        <p>Our model supports 24 static alphabet classes. J and Z are excluded.</p>
+
+        <div class="alphabet-grid">
+            <div class="letter">A</div>
+            <div class="letter">B</div>
+            <div class="letter">C</div>
+            <div class="letter">D</div>
+            <div class="letter">E</div>
+            <div class="letter">F</div>
+            <div class="letter">G</div>
+            <div class="letter">H</div>
+            <div class="letter">I</div>
+            <div class="letter">K</div>
+            <div class="letter">L</div>
+            <div class="letter">M</div>
+            <div class="letter">N</div>
+            <div class="letter">O</div>
+            <div class="letter">P</div>
+            <div class="letter">Q</div>
+            <div class="letter">R</div>
+            <div class="letter">S</div>
+            <div class="letter">T</div>
+            <div class="letter">U</div>
+            <div class="letter">V</div>
+            <div class="letter">W</div>
+            <div class="letter">X</div>
+            <div class="letter">Y</div>
+        </div>
+
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+
+        <h2>About Project</h2>
+
+        <p>
+            This project uses Artificial Intelligence and Deep Learning
+            to recognize American Sign Language alphabet gestures.
+            OpenCV captures webcam frames, MediaPipe detects hand
+            landmarks, and a trained CNN model predicts the alphabet.
+        </p>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>Sign Language Recognition | AI & Data Science Mini Project</p>
+</footer>
+
+<script>
+
+    let predictionTimer = null;
+    let predictionHistory = [];
+
+    function startCamera() {
+
+        const camera = document.getElementById("cameraFeed");
+
+        camera.src = "/video_feed?time=" + Date.now();
+        camera.style.display = "block";
+
+        document.getElementById("cameraMessage").style.display = "none";
+
+        document.getElementById("startBtn").disabled = true;
+        document.getElementById("stopBtn").disabled = false;
+
+        document.getElementById("cameraStatus").innerText =
+            "Camera is running. Show your hand.";
+
+        document.getElementById("predictedLetter").innerText = "--";
+        document.getElementById("confidence").innerText = "Confidence: --";
+
+        predictionTimer = setInterval(getPrediction, 1000);
+    }
+
+    function stopCamera() {
+
+        fetch("/stop_camera", {
+            method: "POST"
+        })
+        .then(response => response.json())
+        .then(data => {
+
+            const camera = document.getElementById("cameraFeed");
+
+            camera.src = "";
+            camera.style.display = "none";
+
+            document.getElementById("cameraMessage").style.display = "block";
+
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+
+            document.getElementById("cameraStatus").innerText =
+                "Camera is currently stopped.";
+
+            document.getElementById("predictedLetter").innerText = "--";
+            document.getElementById("confidence").innerText = "Confidence: --";
+
+            clearInterval(predictionTimer);
+        })
+        .catch(error => {
+            console.error("Error stopping camera:", error);
+        });
+    }
+
+    function getPrediction() {
+
+        fetch("/get_prediction")
+        .then(response => response.json())
+        .then(data => {
+
+            if (data.letter) {
+
+                document.getElementById("predictedLetter").innerText =
+                    data.letter;
+
+                document.getElementById("confidence").innerText =
+                    "Confidence: " + (data.confidence * 100).toFixed(1) + "%";
+
+                if (
+                    data.letter !== "Show your hand" &&
+                    data.letter !== "--"
+                ) {
+                    if (
+                        predictionHistory.length === 0 ||
+                        predictionHistory[predictionHistory.length - 1] !== data.letter
+                    ) {
+                        predictionHistory.push(data.letter);
+
+                        if (predictionHistory.length > 20) {
+                            predictionHistory.shift();
+                        }
+
+                        document.getElementById("historyList").innerText =
+                            predictionHistory.join(" → ");
+
+                        document.getElementById("historySummary").innerText =
+                            predictionHistory.length + " predictions recorded.";
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error("Prediction error:", error);
+        });
+    }
+
+</script>
+
+</body>
+</html>

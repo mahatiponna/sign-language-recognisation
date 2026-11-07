@@ -101,7 +101,7 @@ Press **Q** to close the webcam window.
 ## Applications
 - Assistive communication
 - Sign language learning
-- Human-computer interaction
+- Human-computer interaction657
 - Accessibility technology
 
 ## Future Enhancements
